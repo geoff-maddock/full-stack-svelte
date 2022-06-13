@@ -1,5 +1,5 @@
 import type { RequestHandler, RequestEvent } from "@sveltejs/kit";
-import { text } from "svelte/internal";
+import {api} from "./_api";
 
 type Todo = {
     created_at: Date;
@@ -7,29 +7,22 @@ type Todo = {
     done: boolean;
 }
 
+// TODO move to database
 let todos: Todo = [];
 
-export const get: RequestHandler = () => {
-    return {
-        status: 200,
-        body: todos
-    }
+export const get: RequestHandler = (event) => {
+    return api(event);
 }
 
-export async function post(event: RequestEvent) {
+export const post: RequestHandler = async(event) => {
     const data = await event.request.formData();
-    console.log('formdata js log of request : ', data.get('text'));
-
-    todos.push({
+    // console.log('request to json:', data);
+    console.log(...data)
+    const {text} = Object.fromEntries(data)
+    return api(event, {
+        uid: `${Date.now()}`, // TODO: Replace with the UID from
         created_at: new Date(),
-        text: data.get('text'),
+        text: text,
         done: false
-    })
-
-    return {
-        status: 303,
-        headers: {
-            location: "/"
-        }
-    }
+    });
 }

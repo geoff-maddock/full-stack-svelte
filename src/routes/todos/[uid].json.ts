@@ -7,10 +7,13 @@ export const del: RequestHandler = (event) => {
 }
 
 export const patch: RequestHandler = async(event) => {
+    
     const data = await event.request.formData();
-    const {text} = Object.fromEntries(data);
+    const {text, done} = Object.fromEntries(data);
     console.log(text);
+    
     return api(event, {
-        text: text
+        text: text,
+        done: done ? !!done : undefined
     })
 }

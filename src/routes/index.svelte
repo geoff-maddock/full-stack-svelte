@@ -1,4 +1,6 @@
 <script context="module" lang="ts">
+    import {enhance} from "$lib/actions/form"
+
     export const load = async ({ fetch }) => {
         const res = await fetch("/todos.json");
 
@@ -22,6 +24,21 @@
 
     export let todos;
     const title = "Todo | New";
+
+    const processNewTodoResult = async (res, form) => {
+        const newTodo = await res.json();
+        todos = [...todos, newTodo];
+
+        form.reset();
+    }
+
+    const processUpdatedTodoResult = async (res) => {
+        const updatedTodo = await res.json();
+        todos = todos.map(t => {
+            if (t.uid === updatedTodo.uid) return updatedTodo;
+            return t;
+        })
+    }
 </script>
 
 <style>
@@ -63,12 +80,18 @@
 <div class="todos">
     <h1>{title}</h1>
 
-    <form action="/todos.json" method="POST" class="new">
+    <form action="/todos.json" method="POST" class="new" use:enhance={{result: processNewTodoResult}}>
         <input type="text" name="text" aria-label="Add a todo" placeholder="+ tap to add a todo">
     </form>
     
     {#each todos as todo}
-    <TodoItem todo={todo}/>
+        <TodoItem 
+        {todo} 
+        processDeletedTodoResult={() => {
+            todos = todos.filter(t => t.uid !== todo.uid)
+        }}
+        
+        />
     {/each}
   
 </div>

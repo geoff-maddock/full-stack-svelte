@@ -20,7 +20,6 @@ export const post: RequestHandler = async(event) => {
     console.log(...data)
     const {text} = Object.fromEntries(data)
     return api(event, {
-        uid: `${Date.now()}`, // TODO: Replace with the UID from
         created_at: new Date(),
         text: text,
         done: false

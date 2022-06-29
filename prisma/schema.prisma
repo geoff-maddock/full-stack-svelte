@@ -1,8 +1,8 @@
 // learn more about this file in the docs: https://pris.ly/d/prisma-schema
 datasource db {
     provider = "postgresql"
-    url = "postgres://postgres:Momar128!!@localhost/todos"
-    // url = env("DATABASE_URL")
+    //url = "postgres://postgres:Momar128!!@localhost/todos"
+    url = env("DATABASE_URL")
 }
 
 generator client {
